@@ -8,6 +8,8 @@ const plumber = require('gulp-plumber');
 const cache = require('gulp-cache');
 const imagemin = require('gulp-imagemin');
 const webp = require('gulp-webp');
+const avif = require('gulp-avif');
+const { version } = require("yargs");
 
 function css (done) {
     //1-Identificar archivo SASS
@@ -48,6 +50,18 @@ function versionWebp( done ) {
 
 }
 
+function versionAvif( done ) {
+    const opciones = {
+        quality: 50
+    };
+
+    src('src/img/**/*.{png,jpg}')
+        .pipe( avif(opciones) )
+        .pipe( dest('build/img') );
+    
+    done();    
+}
+
 function dev(done) {
 
     watch('src/scss/**/*.scss', css);
@@ -58,4 +72,5 @@ function dev(done) {
 exports.css = css;
 exports.imagenes = imagenes;
 exports.versionWebp = versionWebp;
-exports.dev = parallel( imagenes, versionWebp, dev);
+exports.versionAvif = versionAvif;
+exports.dev = parallel( versionAvif, imagenes, versionWebp, dev);
